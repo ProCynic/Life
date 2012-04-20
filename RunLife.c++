@@ -44,7 +44,6 @@ int main () {
   // -----------------------
   // life conway cell 109x69
   // -----------------------
-  
   try {
     cout << "*** Life<ConwayCell> 109x69 ***" << endl;
     /*
@@ -57,7 +56,7 @@ int main () {
       Simulate 2500 moves.
       Print grid.
     */
-    
+  /*    
     Life<ConwayCell> l(cin);
     l.print(cout);
     
@@ -69,6 +68,7 @@ int main () {
     
     l.simulate(2500);
     l.print(cout);
+  */
   }
   catch (const invalid_argument&) {
     assert(false);
@@ -76,7 +76,7 @@ int main () {
   catch (const out_of_range&) {
     assert(false);
   }
-  
+
   // -----------------------
   // life fredkin cell 20x20
   // -----------------------

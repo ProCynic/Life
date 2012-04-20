@@ -98,6 +98,7 @@ Position::Position(int r = 0, int c = 0) : r (r), c(c) {
 template <typename T>
 Life<T>::Life(istream& in) {
   generation = 0;
+  population = 0;
   int rows;
   int cols;
   in >> rows;
@@ -109,9 +110,12 @@ Life<T>::Life(istream& in) {
       char cell;
       in >> cell;
       grid[r].push_back(T(cell));
+      if(grid[r][c].alive)
+        population++;
     }
     in >> ws;
   }
+  print(cerr);
 }
 
 /**
@@ -121,13 +125,14 @@ template <typename T>
 void Life<T>::takeTurn() {
   population = 0;
   for(unsigned int i = 0; i < grid.size(); i++)
-    for(unsigned int j = 0; j < grid[0].size(); j++)
-      grid[i][j].countNeighbors(*this);
-  
-  for(unsigned int i = 0; i < grid.size(); i++) {
     for(unsigned int j = 0; j < grid[0].size(); j++) {
       current.r = i;
       current.c = j;
+      grid[i][j].countNeighbors(*this);
+    }
+  
+  for(unsigned int i = 0; i < grid.size(); i++) {
+    for(unsigned int j = 0; j < grid[0].size(); j++) {
       grid[i][j].turn();
       if (grid[i][j].alive)
         population++;
@@ -204,12 +209,13 @@ char ConwayCell::name() {
 // Fredkin Cell
 // ------------
 
-FredkinCell::FredkinCell(char c) : age (0) {
+FredkinCell::FredkinCell(char c) {
+  age = 0;
   if (c == '-')
     alive = false;
   else {
     alive = true;
-    age = (int) c;
+    age = c & 0xF;
   } 
 }
 
@@ -224,11 +230,12 @@ void FredkinCell::countNeighbors(Life<FredkinCell>& board) {
  * Advance the cell state by one turn.
  */
 void FredkinCell::turn() {
-  if (numNeighbors % 2 == 1)
+  if (numNeighbors % 2 == 1) {
     alive = true;
+    age++;
+  }
   else
     alive = false;
-  age++;
 }
 
 char FredkinCell::name() {
@@ -236,5 +243,5 @@ char FredkinCell::name() {
     return '-';
   if(age > 9)
     return '+';
-  return (char) age;
+  return (char) (age + 0x30);
 }
