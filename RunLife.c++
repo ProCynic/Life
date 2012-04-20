@@ -131,6 +131,23 @@ int main () {
       Simulate 5 moves.
       Print every grid.
     */
+    /*
+    ifstream file;
+    file.open("RunLife.in");    
+    assert(file.good());    
+    
+    Life<Cell> l(file);
+
+    file.close();
+
+    l.print(cout);
+
+    for(int x = 0; x < 5; x++) {
+      l.simulate(1);
+      l.print(cout);
+    }
+    */
+
   }
   catch (const invalid_argument&) {
     assert(false);

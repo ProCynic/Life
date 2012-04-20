@@ -54,14 +54,28 @@ class AbstractCell {
   
  public:
   bool alive;
-
   virtual char name() = 0;
   virtual void turn() = 0;
+  
+  virtual operator bool ();
 };
 
 // --------
 
-//class Cell {};
+class Cell : public AbstractCell {
+ private:
+  AbstractCell* ptr;
+ public:
+  Cell(AbstractCell*);
+  ~Cell();
+
+  void turn();
+  void countNeighbors(Life<Cell>&);
+  char name();
+
+  
+  operator bool();
+};
 
 class FredkinCell : public AbstractCell {
  private:
@@ -164,9 +178,44 @@ bool Life<T>::isAlive(Position adj) {
   Position p = current + adj;
   if(p.r < 0 || p.r >= (int)grid.size() || p.c < 0 || p.c >= (int)grid[0].size()) 
     return false;
-  return grid[p.r][p.c].alive;
+  return grid[p.r][p.c];
 }
 
+// -------------
+// Abstract Cell
+// -------------
+
+AbstractCell::operator bool() {
+  return alive;
+}
+
+// ----
+// Cell
+// ----
+
+Cell::Cell(AbstractCell* ptr) {
+  this->ptr = ptr;
+}
+
+Cell::~Cell() {
+  delete ptr;
+}
+
+void Cell::turn() {
+  ptr->turn();
+}
+
+void Cell::countNeighbors(Life<Cell>&){
+}
+
+char Cell::name(){
+  return ptr->name();
+}
+
+
+Cell::operator bool(){
+  return *ptr;
+}
 // -----------
 // Conway Cell
 // -----------
