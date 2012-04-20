@@ -1,3 +1,5 @@
+#include <iostream>
+#include <string>
 #include <vector>
 
 class Position {
@@ -17,7 +19,7 @@ class Position {
     return *this;
   }
 };
-  
+
 const static Position NORTH(1, 0);
 const static Position NORTH_EAST(1, 1);
 const static Position EAST(0, 1);
@@ -52,22 +54,24 @@ class AbstractCell {
  public:
   bool alive;
   virtual char name() = 0;
-  virtual void countNeighbors(const Life&) = 0;
+  virtual void countNeighbors(const Life* const) = 0;
   virtual void turn() = 0;
 
   operator bool () {return alive};
 };
 
-class Cell {};
+//class Cell {};
 
 class FredkinCell : AbstractCell {
  private:
   int age;
  public:
-  FredkinCell(int age=0);
+  FredkinCell(char);
 };
 
 class ConwayCell : AbstractCell {
+ public:
+  ConwayCell(char);
 };
 
 
@@ -82,7 +86,8 @@ Position::Position(int r = 0, int c = 0) : r (r), c(c) {
 // Life
 // ----
 
-Life::Life(istream& in) : {
+template <typename T>
+Life<T>::Life(istream& in) : {
   generation = 0;
   int rows;
   int cols;
@@ -103,7 +108,8 @@ Life::Life(istream& in) : {
 /**
  * Advance the board by one turn.
  */
-void Life::takeTurn() {
+template <typename T>
+void Life<T>::takeTurn() {
   population = 0;
   for(unsigned int i = 0; i < grid.size(); i++)
     for(unsigned int j = 0; j < grid[0].size(); j++)
@@ -121,7 +127,8 @@ void Life::takeTurn() {
   generation++;
 }
 
-void Life::print(ostream& out) {
+template <typename T>
+void Life<T>::print(ostream& out) {
   out << "Generation = " << generation << ", Population = " << population << "." << endl;
   for(unsigned int i = 0; i < grid.size(); i++) {
     for(unsigned int j = 0; j < grid[0].size(); j++)
@@ -132,7 +139,8 @@ void Life::print(ostream& out) {
 }
 
 
-bool Life::isAlive(Position adj) {
+template <typename T>
+bool Life<T>::isAlive(Position adj) {
   Position p = current + p;
   if(p.r < 0 || p.r >= (int)grid.size() || p.c < 0 || p.c >= (int)grid[0].size()) 
     return false;
@@ -144,6 +152,10 @@ bool Life::isAlive(Position adj) {
 // -----------
 
 ConwayCell::ConwayCell(char c) {
+  if (c == '.')
+    this.alive = false;
+  else if (c == '*')
+    this.alive = true;
 }
 
 /**
@@ -156,15 +168,15 @@ void ConwayCell::turn() {
     alive = false;
 }
 
-void ConwayCell::countNeighbors(const Life& board) {
-  neighbors += board.isAlive(NORTH);
-  neighbors += board.isAlive(NORTH_EAST);
-  neighbors += board.isAlive(EAST);
-  neighbors += board.isAlive(SOUTH_EAST);
-  neighbors += board.isAlive(SOUTH);
-  neighbors += board.isAlive(SOUTH_WEST);
-  neighbors += board.isAlive(WEST);
-  neighbors += board.isAlive(NORTH_WEST);
+void ConwayCell::countNeighbors(const Life* const board) {
+  neighbors += board->isAlive(NORTH);
+  neighbors += board->isAlive(NORTH_EAST);
+  neighbors += board->isAlive(EAST);
+  neighbors += board->isAlive(SOUTH_EAST);
+  neighbors += board->isAlive(SOUTH);
+  neighbors += board->isAlive(SOUTH_WEST);
+  neighbors += board->isAlive(WEST);
+  neighbors += board->isAlive(NORTH_WEST);
 }
 
 char ConwayCell::name() {
@@ -177,7 +189,13 @@ char ConwayCell::name() {
 // Fredkin Cell
 // ------------
 
-FredkinCell::FredkinCell(char c) {
+FredkinCell::FredkinCell(char c) : age (0) {
+  if (c == '-')
+    alive = false;
+  else {
+    alive = true;
+    age = (int) c;
+  } 
 }
 
 /**
@@ -187,10 +205,10 @@ FredkinCell::FredkinCell() : age (age) {
 }
 
 void FredkinCell::countNeighbors(const Life& board) {
-  neighbors += board.isAlive(NORTH);
-  neighbors += board.isAlive(EAST);
-  neighbors += board.isAlive(SOUTH);
-  neighbors += board.isAlive(WEST);
+  neighbors += board->isAlive(NORTH);
+  neighbors += board->isAlive(EAST);
+  neighbors += board->isAlive(SOUTH);
+  neighbors += board->isAlive(WEST);
 }
 
 /**

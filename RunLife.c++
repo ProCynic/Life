@@ -58,7 +58,7 @@ int main () {
       Print grid.
     */
     
-    Life l(cin);
+    Life<ConwayCell> l(cin);
     l.print(cout);
     
     l.simulate(283);
@@ -71,9 +71,11 @@ int main () {
     l.print(cout);
   }
   catch (const invalid_argument&) {
-    assert(false);}
+    assert(false);
+  }
   catch (const out_of_range&) {
-    assert(false);}
+    assert(false);
+  }
   
   // -----------------------
   // life fredkin cell 20x20
@@ -88,20 +90,22 @@ int main () {
       Print every grid.
     */
 
-    Life l(cin);
+    Life<FredkinCell> l(cin);
     
     l.print(cout);
 
-    simulate(1);
+    l.simulate(1);
     l.print(cout);
 
-    simulate(1);
+    l.simulate(1);
     l.print(cout);
   }
   catch (const invalid_argument&) {
-    assert(false);}
+    assert(false);
+  }
   catch (const out_of_range&) {
-    assert(false);}
+    assert(false);
+  }
   
   // ---------------
   // life cell 20x20
@@ -117,8 +121,11 @@ int main () {
     */
   }
   catch (const invalid_argument&) {
-    assert(false);}
+    assert(false);
+  }
   catch (const out_of_range&) {
-    assert(false);}
+    assert(false);
+  }
   
-  return 0;}
+  return 0;
+}
