@@ -29,6 +29,7 @@
 #include <cassert>   // assert
 #include <iostream>  // cout, endl
 #include <stdexcept> // invalid_argument, out_of_range
+#include <fstream>
 
 
 #include "Life.h"
@@ -56,10 +57,16 @@ int main () {
       Simulate 2500 moves.
       Print grid.
     */
-  /*    
-    Life<ConwayCell> l(cin);
+    ifstream file;
+    file.open("RunLifeConway.in");
+    assert(file.good());
+
+    Life<ConwayCell> l(file);
+
+    file.close();
+
     l.print(cout);
-    
+
     l.simulate(283);
     l.print(cout);
     
@@ -68,7 +75,6 @@ int main () {
     
     l.simulate(2500);
     l.print(cout);
-  */
   }
   catch (const invalid_argument&) {
     assert(false);
@@ -90,8 +96,14 @@ int main () {
       Print every grid.
     */
 
-    Life<FredkinCell> l(cin);
-    
+    ifstream file;
+    file.open("RunLifeFredkin.in");    
+    assert(file.good());    
+
+    Life<FredkinCell> l(file);
+
+    file.close();
+
     l.print(cout);
 
     l.simulate(1);

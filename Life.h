@@ -113,9 +113,9 @@ Life<T>::Life(istream& in) {
       if(grid[r][c].alive)
         population++;
     }
-    in >> ws;
+    if(in)
+      in >> ws;
   }
-  print(cerr);
 }
 
 /**
@@ -184,11 +184,14 @@ ConwayCell::ConwayCell(char c) {
 void ConwayCell::turn() {
   if (numNeighbors == 3)
     alive = true;
-  if (numNeighbors < 2 || numNeighbors > 3)
+  else if (numNeighbors < 2 || numNeighbors > 3)
     alive = false;
+  else
+    alive = alive; //do nothing
 }
 
 void ConwayCell::countNeighbors(Life<ConwayCell>& board) {
+  numNeighbors = 0;
   numNeighbors += board.isAlive(NORTH);
   numNeighbors += board.isAlive(NORTH_EAST);
   numNeighbors += board.isAlive(EAST);
@@ -220,6 +223,7 @@ FredkinCell::FredkinCell(char c) {
 }
 
 void FredkinCell::countNeighbors(Life<FredkinCell>& board) {
+  numNeighbors = 0;
   numNeighbors += board.isAlive(NORTH);
   numNeighbors += board.isAlive(EAST);
   numNeighbors += board.isAlive(SOUTH);
