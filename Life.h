@@ -2,6 +2,7 @@
 #include <string>
 #include <vector>
 
+using namespace std;
 class Position {
   friend const Position operator+(Position lhs, const Position& rhs) {
     return lhs += rhs;
@@ -48,30 +49,38 @@ class Life {
 };
 
 class AbstractCell {
- private:
+ protected:
   int numNeighbors;
   
  public:
   bool alive;
-  virtual char name() = 0;
-  virtual void countNeighbors(const Life* const) = 0;
-  virtual void turn() = 0;
 
-  operator bool () {return alive};
+  virtual char name() = 0;
+  virtual void turn() = 0;
 };
+
+// --------
 
 //class Cell {};
 
-class FredkinCell : AbstractCell {
+class FredkinCell : public AbstractCell {
  private:
   int age;
  public:
   FredkinCell(char);
+
+  void turn();
+  void countNeighbors(Life<FredkinCell>&);
+  char name();
 };
 
-class ConwayCell : AbstractCell {
+class ConwayCell : public AbstractCell {
  public:
   ConwayCell(char);
+
+  void turn();
+  void countNeighbors(Life<ConwayCell>&);
+  char name();
 };
 
 
@@ -87,16 +96,16 @@ Position::Position(int r = 0, int c = 0) : r (r), c(c) {
 // ----
 
 template <typename T>
-Life<T>::Life(istream& in) : {
+Life<T>::Life(istream& in) {
   generation = 0;
   int rows;
   int cols;
   in >> rows;
   in >> cols >> ws;
 
-  for(unsigned int r = 0; r < rows; r++) {
-    grid.push_back(vector<T>);
-    for(unsigned int c = 0; c < cols; c++) {
+  for(int r = 0; r < rows; r++) {
+    grid.push_back(vector<T>());
+    for(int c = 0; c < cols; c++) {
       char cell;
       in >> cell;
       grid[r].push_back(T(cell));
@@ -113,7 +122,7 @@ void Life<T>::takeTurn() {
   population = 0;
   for(unsigned int i = 0; i < grid.size(); i++)
     for(unsigned int j = 0; j < grid[0].size(); j++)
-      grid[i][j].countNeighbors();
+      grid[i][j].countNeighbors(*this);
   
   for(unsigned int i = 0; i < grid.size(); i++) {
     for(unsigned int j = 0; j < grid[0].size(); j++) {
@@ -125,6 +134,12 @@ void Life<T>::takeTurn() {
     }
   }
   generation++;
+}
+
+template <typename T>
+void Life<T>::simulate(int numTurns) {
+  while(numTurns-- > 0)
+    takeTurn();
 }
 
 template <typename T>
@@ -141,10 +156,10 @@ void Life<T>::print(ostream& out) {
 
 template <typename T>
 bool Life<T>::isAlive(Position adj) {
-  Position p = current + p;
+  Position p = current + adj;
   if(p.r < 0 || p.r >= (int)grid.size() || p.c < 0 || p.c >= (int)grid[0].size()) 
     return false;
-  return grid[p.r][p.c];
+  return grid[p.r][p.c].alive;
 }
 
 // -----------
@@ -153,9 +168,9 @@ bool Life<T>::isAlive(Position adj) {
 
 ConwayCell::ConwayCell(char c) {
   if (c == '.')
-    this.alive = false;
+    alive = false;
   else if (c == '*')
-    this.alive = true;
+    alive = true;
 }
 
 /**
@@ -168,15 +183,15 @@ void ConwayCell::turn() {
     alive = false;
 }
 
-void ConwayCell::countNeighbors(const Life* const board) {
-  neighbors += board->isAlive(NORTH);
-  neighbors += board->isAlive(NORTH_EAST);
-  neighbors += board->isAlive(EAST);
-  neighbors += board->isAlive(SOUTH_EAST);
-  neighbors += board->isAlive(SOUTH);
-  neighbors += board->isAlive(SOUTH_WEST);
-  neighbors += board->isAlive(WEST);
-  neighbors += board->isAlive(NORTH_WEST);
+void ConwayCell::countNeighbors(Life<ConwayCell>& board) {
+  numNeighbors += board.isAlive(NORTH);
+  numNeighbors += board.isAlive(NORTH_EAST);
+  numNeighbors += board.isAlive(EAST);
+  numNeighbors += board.isAlive(SOUTH_EAST);
+  numNeighbors += board.isAlive(SOUTH);
+  numNeighbors += board.isAlive(SOUTH_WEST);
+  numNeighbors += board.isAlive(WEST);
+  numNeighbors += board.isAlive(NORTH_WEST);
 }
 
 char ConwayCell::name() {
@@ -198,17 +213,11 @@ FredkinCell::FredkinCell(char c) : age (0) {
   } 
 }
 
-/**
- * Construct a new Fredkin Cell with age 0.
- */
-FredkinCell::FredkinCell() : age (age) {
-}
-
-void FredkinCell::countNeighbors(const Life& board) {
-  neighbors += board->isAlive(NORTH);
-  neighbors += board->isAlive(EAST);
-  neighbors += board->isAlive(SOUTH);
-  neighbors += board->isAlive(WEST);
+void FredkinCell::countNeighbors(Life<FredkinCell>& board) {
+  numNeighbors += board.isAlive(NORTH);
+  numNeighbors += board.isAlive(EAST);
+  numNeighbors += board.isAlive(SOUTH);
+  numNeighbors += board.isAlive(WEST);
 }
 
 /**
