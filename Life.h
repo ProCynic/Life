@@ -45,6 +45,7 @@ class Life {
   void simulate(int numTurns);    
   void print(ostream& out);
   
+  int countNeighbors(unsigned char);
   bool isAlive(Position);
 };
 
@@ -56,27 +57,33 @@ class AbstractCell {
   bool alive;
   virtual char name() = 0;
   virtual void turn() = 0;
+  virtual unsigned char neighbors() = 0;
   
   virtual operator bool ();
+  
+  virtual void setNeighbors(int);
 };
 
 // --------
-
+/*
 class Cell : public AbstractCell {
  private:
   AbstractCell* ptr;
  public:
-  Cell(AbstractCell*);
+  Cell(char);
+  Cell(const Cell&);
+  Cell& operator = (Cell);
   ~Cell();
 
   void turn();
-  void countNeighbors(Life<Cell>&);
+  unsigned char neighbors();
   char name();
 
+  void setNeighbors(int);
   
   operator bool();
 };
-
+*/
 class FredkinCell : public AbstractCell {
  private:
   int age;
@@ -84,7 +91,7 @@ class FredkinCell : public AbstractCell {
   FredkinCell(char);
 
   void turn();
-  void countNeighbors(Life<FredkinCell>&);
+  unsigned char neighbors();
   char name();
 };
 
@@ -93,7 +100,7 @@ class ConwayCell : public AbstractCell {
   ConwayCell(char);
 
   void turn();
-  void countNeighbors(Life<ConwayCell>&);
+  unsigned char neighbors();
   char name();
 };
 
@@ -142,7 +149,7 @@ void Life<T>::takeTurn() {
     for(unsigned int j = 0; j < grid[0].size(); j++) {
       current.r = i;
       current.c = j;
-      grid[i][j].countNeighbors(*this);
+      grid[i][j].setNeighbors(countNeighbors(grid[i][j].neighbors()));
     }
   
   for(unsigned int i = 0; i < grid.size(); i++) {
@@ -172,6 +179,28 @@ void Life<T>::print(ostream& out) {
   out << endl;
 }
 
+template <typename T>
+int Life<T>::countNeighbors(unsigned char neighbors) {
+  int numNeighbors = 0;
+  if(neighbors & 0x80)
+    numNeighbors += isAlive(NORTH);
+  if(neighbors & 0x40)
+    numNeighbors += isAlive(NORTH_EAST);
+  if(neighbors & 0x20)
+    numNeighbors += isAlive(EAST);
+  if(neighbors & 0x10)
+    numNeighbors += isAlive(SOUTH_EAST);
+  if(neighbors & 0x08)
+    numNeighbors += isAlive(SOUTH);
+  if(neighbors & 0x04)
+    numNeighbors += isAlive(SOUTH_WEST);
+  if(neighbors & 0x02)
+    numNeighbors += isAlive(WEST);
+  if(neighbors & 0x01)
+    numNeighbors += isAlive(NORTH_WEST);
+  return numNeighbors;
+}
+
 
 template <typename T>
 bool Life<T>::isAlive(Position adj) {
@@ -185,6 +214,10 @@ bool Life<T>::isAlive(Position adj) {
 // Abstract Cell
 // -------------
 
+void AbstractCell::setNeighbors(int n) {
+  numNeighbors = n;
+}
+
 AbstractCell::operator bool() {
   return alive;
 }
@@ -192,12 +225,28 @@ AbstractCell::operator bool() {
 // ----
 // Cell
 // ----
+/*
+Cell::Cell(char c){
+  cerr << "c";
+  if(c == '.'|| c == '*')
+    ptr = new ConwayCell(c);
+  else
+    ptr = new FredkinCell(c);
+}
 
-Cell::Cell(AbstractCell* ptr) {
-  this->ptr = ptr;
+Cell::Cell(const Cell& other) {
+  if (!other.ptr)
+    ptr = 0;
+  else
+    ptr = other.ptr->clone();
+}
+
+Cell& Cell::operator = (Cell other) {
+  swap(ptr, other.ptr);
 }
 
 Cell::~Cell() {
+  cerr << "destructing" << endl;
   delete ptr;
 }
 
@@ -205,17 +254,22 @@ void Cell::turn() {
   ptr->turn();
 }
 
-void Cell::countNeighbors(Life<Cell>&){
+unsigned char Cell::neighbors() {
+  return ptr->neighbors();
 }
 
 char Cell::name(){
   return ptr->name();
 }
 
+void Cell::setNeighbors(int n) {
+  ptr->setNeighbors(n);
+}
 
 Cell::operator bool(){
   return *ptr;
 }
+*/
 // -----------
 // Conway Cell
 // -----------
@@ -239,17 +293,10 @@ void ConwayCell::turn() {
     alive = alive; //do nothing
 }
 
-void ConwayCell::countNeighbors(Life<ConwayCell>& board) {
-  numNeighbors = 0;
-  numNeighbors += board.isAlive(NORTH);
-  numNeighbors += board.isAlive(NORTH_EAST);
-  numNeighbors += board.isAlive(EAST);
-  numNeighbors += board.isAlive(SOUTH_EAST);
-  numNeighbors += board.isAlive(SOUTH);
-  numNeighbors += board.isAlive(SOUTH_WEST);
-  numNeighbors += board.isAlive(WEST);
-  numNeighbors += board.isAlive(NORTH_WEST);
+unsigned char ConwayCell::neighbors() {
+  return 0xFF;
 }
+
 
 char ConwayCell::name() {
   if(alive)
@@ -271,14 +318,6 @@ FredkinCell::FredkinCell(char c) {
   } 
 }
 
-void FredkinCell::countNeighbors(Life<FredkinCell>& board) {
-  numNeighbors = 0;
-  numNeighbors += board.isAlive(NORTH);
-  numNeighbors += board.isAlive(EAST);
-  numNeighbors += board.isAlive(SOUTH);
-  numNeighbors += board.isAlive(WEST);
-}
-
 /**
  * Advance the cell state by one turn.
  */
@@ -289,6 +328,10 @@ void FredkinCell::turn() {
   }
   else
     alive = false;
+}
+
+unsigned char FredkinCell::neighbors() {
+  return 0xAA;
 }
 
 char FredkinCell::name() {
