@@ -31,88 +31,167 @@
 // TestLife
 // -----------
 
+using namespace std;
 struct TestLife : CppUnit::TestFixture {
 
+  // ----
+  // Life
+  // ----
+
+  void test_life_constructor_1x1_dead() {
+    istringstream in("1\n1\n.\n");
+    Life<ConwayCell> l(in);
+    CPPUNIT_ASSERT_EQUAL(1, (int)l.grid.size());
+    CPPUNIT_ASSERT_EQUAL(1, (int)l.grid[0].size());
+    CPPUNIT_ASSERT_EQUAL(false, l.grid[0][0].alive);
+    CPPUNIT_ASSERT_EQUAL(0, l.population);
+    CPPUNIT_ASSERT_EQUAL(0, l.generation);
+  }
+
+  void test_life_constructor_2x2_alive() {
+    istringstream in("2\n2\n**\n**\n");
+    Life<ConwayCell> l(in);
+    CPPUNIT_ASSERT_EQUAL(2, (int)l.grid.size());
+    CPPUNIT_ASSERT_EQUAL(2, (int)l.grid[0].size());
+    CPPUNIT_ASSERT_EQUAL(true, l.grid[0][0].alive);
+    CPPUNIT_ASSERT_EQUAL(true, l.grid[0][1].alive);
+    CPPUNIT_ASSERT_EQUAL(true, l.grid[1][0].alive);
+    CPPUNIT_ASSERT_EQUAL(true, l.grid[1][1].alive);
+    CPPUNIT_ASSERT_EQUAL(4, l.population);
+    CPPUNIT_ASSERT_EQUAL(0, l.generation);
+  }
+
+  void test_life_constructor_1x1_fredkin() {
+    istringstream in("1\n1\n-\n");
+    Life<FredkinCell> l(in);
+    CPPUNIT_ASSERT_EQUAL(1, (int)l.grid.size());
+    CPPUNIT_ASSERT_EQUAL(1, (int)l.grid[0].size());
+    CPPUNIT_ASSERT_EQUAL(false, l.grid[0][0].alive);
+    CPPUNIT_ASSERT_EQUAL(0, l.grid[0][0].age);
+    CPPUNIT_ASSERT_EQUAL(0, l.population);
+    CPPUNIT_ASSERT_EQUAL(0, l.generation);
+  }
+
+  void test_life_simulate_1x1() {
+    istringstream in("1\n1\n*\n");
+    Life<ConwayCell> l(in);
+    CPPUNIT_ASSERT_EQUAL(true, l.grid[0][0].alive);
+    CPPUNIT_ASSERT_EQUAL(1, l.population);
+    CPPUNIT_ASSERT_EQUAL(0, l.generation);
+    l.simulate(500);
+    CPPUNIT_ASSERT_EQUAL(false, l.grid[0][0].alive);
+    CPPUNIT_ASSERT_EQUAL(0, l.population);
+    CPPUNIT_ASSERT_EQUAL(500, l.generation);
+  }
+
+  void test_life_simulate_2x2() {
+    istringstream in("2\n2\n**\n**\n");
+    Life<ConwayCell> l(in);
+    CPPUNIT_ASSERT_EQUAL(true, l.grid[0][0].alive);
+    CPPUNIT_ASSERT_EQUAL(true, l.grid[0][1].alive);
+    CPPUNIT_ASSERT_EQUAL(true, l.grid[1][0].alive);
+    CPPUNIT_ASSERT_EQUAL(true, l.grid[1][1].alive);
+    CPPUNIT_ASSERT_EQUAL(4, l.population);
+    CPPUNIT_ASSERT_EQUAL(0, l.generation);
+    l.simulate(500);
+    CPPUNIT_ASSERT_EQUAL(true, l.grid[0][0].alive);
+    CPPUNIT_ASSERT_EQUAL(true, l.grid[0][1].alive);
+    CPPUNIT_ASSERT_EQUAL(true, l.grid[1][0].alive);
+    CPPUNIT_ASSERT_EQUAL(true, l.grid[1][1].alive);
+    CPPUNIT_ASSERT_EQUAL(4, l.population);
+    CPPUNIT_ASSERT_EQUAL(500, l.generation);
+  }
+
+  void test_life_simulate_flipper() {
+    istringstream in("3\n3\n.*.\n.*.\n.*.\n");
+    Life<ConwayCell> l(in);
+    const bool expected1[3][3] = {{false, true, false}, {false, true, false}, {false, true, false}};
+    const bool expected2[3][3] = {{false, false, false}, {true, true, true}, {false, false, false}};
+    for (int r = 0; r < 3; r++)
+      for (int c = 0; c < 3; c++)
+        CPPUNIT_ASSERT_EQUAL(expected1[r][c], l.grid[r][c].alive);
+    CPPUNIT_ASSERT_EQUAL(3, l.population);
+    CPPUNIT_ASSERT_EQUAL(0, l.generation);
+    l.simulate(333);
+    for (int r = 0; r < 3; r++)
+      for (int c = 0; c < 3; c++)
+        CPPUNIT_ASSERT_EQUAL(expected2[r][c], l.grid[r][c].alive);
+    CPPUNIT_ASSERT_EQUAL(3, l.population);
+    CPPUNIT_ASSERT_EQUAL(333, l.generation);
+  }
+
   void test_ConwayCell_constructor_alive(){
-    ConwayCell myCell = new ConwayCell('*');
-    bool myCellAlive = myCell.alive;
-    CPPUNIT_ASSERT_EQUALS(true, myCellAlive);
+    ConwayCell myCell('*');
+    CPPUNIT_ASSERT_EQUAL(true, myCell.alive);
   }
   
   void test_ConwayCell_constructor_dead(){
-    ConwayCell myCell = new ConwayCell('.');
-    bool myCellAlive = myCell.alive;
-    CPPUNIT_ASSERT_EQUALS(false, myCellAlive);
+    ConwayCell myCell('.');
+    CPPUNIT_ASSERT_EQUAL(false, myCell.alive);
   }
   
   void test_ConwayCell_constructor_3(){
     
-    //CPPUNIT_ASSERT_EQUALS();
+    //CPPUNIT_ASSERT_EQUAL();
   }
   void test_FredkinCell_constructor_alive(){
-    FredkinCell myCell = new FredkinCell('4');
-    bool myCellAlive = myCell.alive;
-    CPPUNIT_ASSERT_EQUALS(true, myCellAlive);
+    FredkinCell myCell('4');
+    CPPUNIT_ASSERT_EQUAL(true, myCell.alive);
   }
   
   void test_FredkinCell_constructor_dead(){
-    FredkinCell myCell = new FredkinCell('-');
-    bool myCellAlive = myCell.alive;
-    CPPUNIT_ASSERT_EQUALS(false, myCellAlive);
+    FredkinCell myCell('-');
+    CPPUNIT_ASSERT_EQUAL(false, myCell.alive);
   }
   
   void test_FredkinCell_constructor_3(){
     
-    //CPPUNIT_ASSERT_EQUALS();
+    //CPPUNIT_ASSERT_EQUAL();
   }
   
   void test_ConwayCell_name_alive(){
-    ConwayCell myCell = new ConwayCell('*');
-    bool myCellName = myCell.name();
-    CPPUNIT_ASSERT_EQUALS('*', myCellName);
+    ConwayCell myCell('*');
+    CPPUNIT_ASSERT_EQUAL('*', myCell.name());
   }
   
   void test_ConwayCell_name_dead(){
-    ConwayCell myCell = new ConwayCell('.');
-    bool myCellName = myCell.name();
-    CPPUNIT_ASSERT_EQUALS('.', myCellName);
+    ConwayCell myCell('.');
+    CPPUNIT_ASSERT_EQUAL('.', myCell.name());
   }
   
   void test_ConwayCell_name_3(){
     
-    //CPPUNIT_ASSERT_EQUALS();
+    //CPPUNIT_ASSERT_EQUAL();
   }
   
   void test_FredkinCell_name_age3(){
-    FredkinCell myCell = new FredkinCell('3');
-    bool myCellName = myCell.name();
-    CPPUNIT_ASSERT_EQUALS('3', myCellName);
+    FredkinCell myCell('3');
+    CPPUNIT_ASSERT_EQUAL('3', myCell.name());
   }
   
   void test_FredkinCell_name_dead(){
-    FredkinCell myCell = new FredkinCell('-');
-    bool myCellName = myCell.name();
-    CPPUNIT_ASSERT_EQUALS('-', myCellName);
+    FredkinCell myCell('-');
+    CPPUNIT_ASSERT_EQUAL('-', myCell.name());
   }
   
   void test_FredkinCell_name_age14(){
-    FredkinCell myCell = new FredkinCell('0');
+    FredkinCell myCell('0');
     myCell.age = 14;
-    bool myCellName = myCell.name();
-    CPPUNIT_ASSERT_EQUALS('+', myCellName);
+    CPPUNIT_ASSERT_EQUAL('+', myCell.name());
   }
-  
-  void test_ConwayCell_neighbors_1(){
-    ConwayCell myCell = new ConwayCell('*');
-    unsigned char myCellNeighbors = myCell.neighbors();
-    CPPUNIT_ASSERT_EQUALS(0xAA, myCellNeighbors);
-  }
-
+ 
   // -----
   // suite
   // -----
   
   CPPUNIT_TEST_SUITE(TestLife);
+  CPPUNIT_TEST(test_life_constructor_1x1_dead);
+  CPPUNIT_TEST(test_life_constructor_2x2_alive);
+  CPPUNIT_TEST(test_life_constructor_1x1_fredkin);
+  
+  CPPUNIT_TEST(test_life_simulate_1x1);
+  CPPUNIT_TEST(test_life_simulate_2x2);
+  CPPUNIT_TEST(test_life_simulate_flipper);
   
   CPPUNIT_TEST(test_ConwayCell_constructor_alive);
   CPPUNIT_TEST(test_ConwayCell_constructor_dead);
@@ -129,9 +208,7 @@ struct TestLife : CppUnit::TestFixture {
   CPPUNIT_TEST(test_FredkinCell_name_age3);
   CPPUNIT_TEST(test_FredkinCell_name_dead);
   CPPUNIT_TEST(test_FredkinCell_name_age14);
-  
-  
-  
+
   CPPUNIT_TEST_SUITE_END();
 };
 
