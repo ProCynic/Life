@@ -134,19 +134,22 @@ struct TestLife : CppUnit::TestFixture {
     
     //CPPUNIT_ASSERT_EQUAL();
   }
-  void test_FredkinCell_constructor_alive(){
-    FredkinCell myCell('4');
+  void test_FredkinCell_constructor_age0(){
+    FredkinCell myCell('0');
+    CPPUNIT_ASSERT_EQUAL(0, myCell.age);
     CPPUNIT_ASSERT_EQUAL(true, myCell.alive);
   }
   
   void test_FredkinCell_constructor_dead(){
     FredkinCell myCell('-');
+    CPPUNIT_ASSERT_EQUAL(0, myCell.age);
     CPPUNIT_ASSERT_EQUAL(false, myCell.alive);
   }
   
-  void test_FredkinCell_constructor_3(){
-    
-    //CPPUNIT_ASSERT_EQUAL();
+  void test_FredkinCell_constructor_age9(){
+    FredkinCell myCell('9');
+    CPPUNIT_ASSERT_EQUAL(9, myCell.age);
+    CPPUNIT_ASSERT_EQUAL(true, myCell.alive);
   }
   
   void test_ConwayCell_name_alive(){
@@ -197,9 +200,9 @@ struct TestLife : CppUnit::TestFixture {
   CPPUNIT_TEST(test_ConwayCell_constructor_dead);
   CPPUNIT_TEST(test_ConwayCell_constructor_3);
   
-  CPPUNIT_TEST(test_FredkinCell_constructor_alive);
+  CPPUNIT_TEST(test_FredkinCell_constructor_age0);
   CPPUNIT_TEST(test_FredkinCell_constructor_dead);
-  CPPUNIT_TEST(test_FredkinCell_constructor_3);
+  CPPUNIT_TEST(test_FredkinCell_constructor_age9);
   
   CPPUNIT_TEST(test_ConwayCell_name_alive);
   CPPUNIT_TEST(test_ConwayCell_name_dead);

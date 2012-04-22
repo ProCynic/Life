@@ -131,7 +131,7 @@ int main () {
       Simulate 5 moves.
       Print every grid.
     */
-/*    
+    
     ifstream file;
     file.open("RunLife.in");    
     assert(file.good());    
@@ -146,7 +146,7 @@ int main () {
       l.simulate(1);
       l.print(cout);
     }
-    */
+    
   }
   catch (const invalid_argument&) {
     assert(false);

@@ -60,13 +60,16 @@ class AbstractCell {
   virtual unsigned char neighbors() = 0;
   
   virtual operator bool ();
+  virtual operator int ();
   
   virtual void setNeighbors(int);
+  
+  virtual AbstractCell* clone() = 0;
 };
 
 // --------
-/*
-class Cell : public AbstractCell {
+
+class Cell {
  private:
   AbstractCell* ptr;
  public:
@@ -83,7 +86,18 @@ class Cell : public AbstractCell {
   
   operator bool();
 };
-*/
+
+class ConwayCell : public AbstractCell {
+ public:
+  ConwayCell(char);
+
+  void turn();
+  unsigned char neighbors();
+  char name();
+  
+  AbstractCell* clone();
+};
+
 class FredkinCell : public AbstractCell {
  private:
   int age;
@@ -93,17 +107,10 @@ class FredkinCell : public AbstractCell {
   void turn();
   unsigned char neighbors();
   char name();
+  
+  AbstractCell* clone();
+  operator int();
 };
-
-class ConwayCell : public AbstractCell {
- public:
-  ConwayCell(char);
-
-  void turn();
-  unsigned char neighbors();
-  char name();
-};
-
 
 // --------
 // position
@@ -131,7 +138,7 @@ Life<T>::Life(istream& in) {
       char cell;
       in >> cell;
       grid[r].push_back(T(cell));
-      if(grid[r][c].alive)
+      if(grid[r][c])
         population++;
     }
     if(in)
@@ -155,7 +162,7 @@ void Life<T>::takeTurn() {
   for(unsigned int i = 0; i < grid.size(); i++) {
     for(unsigned int j = 0; j < grid[0].size(); j++) {
       grid[i][j].turn();
-      if (grid[i][j].alive)
+      if (grid[i][j])
         population++;
     }
   }
@@ -218,16 +225,21 @@ void AbstractCell::setNeighbors(int n) {
   numNeighbors = n;
 }
 
+
+
 AbstractCell::operator bool() {
   return alive;
+}
+
+AbstractCell::operator int() {
+  return 0;
 }
 
 // ----
 // Cell
 // ----
-/*
+
 Cell::Cell(char c){
-  cerr << "c";
   if(c == '.'|| c == '*')
     ptr = new ConwayCell(c);
   else
@@ -243,15 +255,19 @@ Cell::Cell(const Cell& other) {
 
 Cell& Cell::operator = (Cell other) {
   swap(ptr, other.ptr);
+  return *this;
 }
 
 Cell::~Cell() {
-  cerr << "destructing" << endl;
   delete ptr;
 }
 
 void Cell::turn() {
   ptr->turn();
+  if(*ptr == 2 && *ptr) {
+    delete ptr;
+    ptr = new ConwayCell('*');  
+  }
 }
 
 unsigned char Cell::neighbors() {
@@ -269,7 +285,7 @@ void Cell::setNeighbors(int n) {
 Cell::operator bool(){
   return *ptr;
 }
-*/
+
 // -----------
 // Conway Cell
 // -----------
@@ -303,6 +319,11 @@ char ConwayCell::name() {
     return '*';
   return '.';
 }
+
+AbstractCell* ConwayCell::clone(){
+  return new ConwayCell(*this);
+}
+
 
 // ------------
 // Fredkin Cell
@@ -341,3 +362,12 @@ char FredkinCell::name() {
     return '+';
   return (char) (age + 0x30);
 }
+
+FredkinCell::operator int() {
+  return age;
+}
+
+AbstractCell* FredkinCell::clone(){
+  return new FredkinCell(*this);
+}
+
