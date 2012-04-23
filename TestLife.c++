@@ -37,6 +37,16 @@
 using namespace std;
 struct TestLife : CppUnit::TestFixture {
 
+  // --------
+  // Position
+  // --------
+
+  //constructor
+  // +=
+  // +
+
+
+
   // ----
   // Life
   // ----
@@ -189,6 +199,11 @@ struct TestLife : CppUnit::TestFixture {
     l.print(out);
     CPPUNIT_ASSERT_EQUAL((string)"Generation = 100, Population = 2.\n-8-\n--0\n---\n\n", out.str());
   }
+
+
+  // countNeighbors
+
+  // isAlive
   
   // -------------
   // Abstract Cell
@@ -198,6 +213,7 @@ struct TestLife : CppUnit::TestFixture {
     ConwayCell myCell('*');
     CPPUNIT_ASSERT_EQUAL(true, (bool)myCell);
   }
+
   void test_AbstractCell_operator_bool_conway_dead(){
     ConwayCell myCell('.');
     CPPUNIT_ASSERT_EQUAL(false, (bool)myCell);
@@ -238,10 +254,31 @@ struct TestLife : CppUnit::TestFixture {
     myCell.setNeighbors(3);
     CPPUNIT_ASSERT_EQUAL(3, myCell.numNeighbors);
   }
+
+  // ----
+  // Cell
+  // ----
+
+  // copy constructor
+
+  // copy assignment
+
+  // destructor
+
+  //turn
+
+  // neighbors
+
+  // name
+
+  // setNeighbors
+
+  //operator bool
   
   // -----------
   // Conway Cell
   // -----------
+
 
   void test_ConwayCell_constructor_alive(){
     ConwayCell myCell('*');
