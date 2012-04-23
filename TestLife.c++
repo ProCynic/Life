@@ -399,13 +399,16 @@ struct TestLife : CppUnit::TestFixture {
     FredkinCell* myCellClone = dynamic_cast<FredkinCell*>(myCellPrime.clone());
     CPPUNIT_ASSERT_EQUAL(false, myCellClone->alive);
     CPPUNIT_ASSERT_EQUAL(0, myCellClone->age);
+    delete myCellClone;
   }
   void test_FredkinCell_clone_alive_3(){
     FredkinCell myCellPrime('3');
     FredkinCell* myCellClone = dynamic_cast<FredkinCell*>(myCellPrime.clone());
     CPPUNIT_ASSERT_EQUAL(true, myCellClone->alive);
     CPPUNIT_ASSERT_EQUAL(3, myCellClone->age);
+    delete myCellClone;
   }
+
   void test_FredkinCell_clone_alive_14(){
     FredkinCell myCellPrime('3');
     FredkinCell* myCellClone = dynamic_cast<FredkinCell*>(myCellPrime.clone());

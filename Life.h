@@ -8,7 +8,7 @@ class Position {
   friend const Position operator+(Position lhs, const Position& rhs) {
     return lhs += rhs;
   }
-
+  
  public:
   int r;
   int c;
@@ -31,6 +31,11 @@ const static Position SOUTH_WEST(-1, -1);
 const static Position WEST(0, -1);
 const static Position NORTH_WEST(1, -1);
 
+static const Position cnarr[] = {NORTH, NORTH_EAST, EAST, SOUTH_EAST, SOUTH, SOUTH_WEST, WEST, NORTH_WEST};
+static const Position fnarr[] = {NORTH, EAST, SOUTH, WEST};
+static const vector<Position> conwayNeighbors(cnarr, cnarr + 8);
+static const vector<Position> fredkinNeighbors(fnarr, fnarr + 4);
+
 template <typename T>
 class Life {
  private:
@@ -46,7 +51,7 @@ class Life {
   void simulate(int numTurns);    
   void print(ostream& out);
   
-  int countNeighbors(unsigned char);
+  void countNeighbors(T&);
   bool isAlive(Position);
 };
 
@@ -58,7 +63,7 @@ class AbstractCell {
   bool alive;
   virtual char name() = 0;
   virtual void turn() = 0;
-  virtual unsigned char neighbors() = 0;
+  virtual const vector<Position>& neighbors() = 0;
   
   virtual operator bool ();
   virtual operator int ();
@@ -68,8 +73,6 @@ class AbstractCell {
   virtual AbstractCell* clone() = 0;
 };
 
-// --------
-
 class Cell {
  private:
   AbstractCell* ptr;
@@ -78,22 +81,23 @@ class Cell {
   Cell(const Cell&);
   Cell& operator = (Cell);
   ~Cell();
-
+  
   void turn();
-  unsigned char neighbors();
+  const vector<Position>& neighbors();
   char name();
-
+  
   void setNeighbors(int);
   
   operator bool();
 };
 
+
 class ConwayCell : public AbstractCell {
  public:
   ConwayCell(char);
-
+  
   void turn();
-  unsigned char neighbors();
+  const vector<Position>& neighbors();
   char name();
   
   AbstractCell* clone();
@@ -104,9 +108,9 @@ class FredkinCell : public AbstractCell {
   int age;
  public:
   FredkinCell(char);
-
+  
   void turn();
-  unsigned char neighbors();
+  const vector<Position>& neighbors();
   char name();
   
   AbstractCell* clone();
@@ -132,7 +136,7 @@ Life<T>::Life(istream& in) {
   int cols;
   in >> rows;
   in >> cols >> ws;
-
+  
   for(int r = 0; r < rows; r++) {
     grid.push_back(vector<T>());
     for(int c = 0; c < cols; c++) {
@@ -157,7 +161,7 @@ void Life<T>::takeTurn() {
     for(unsigned int j = 0; j < grid[0].size(); j++) {
       current.r = i;
       current.c = j;
-      grid[i][j].setNeighbors(countNeighbors(grid[i][j].neighbors()));
+      countNeighbors(grid[i][j]);
     }
   
   for(unsigned int i = 0; i < grid.size(); i++) {
@@ -188,25 +192,13 @@ void Life<T>::print(ostream& out) {
 }
 
 template <typename T>
-int Life<T>::countNeighbors(unsigned char neighbors) {
+void Life<T>::countNeighbors(T& cell) {
+  vector<Position> adjacent = cell.neighbors();
   int numNeighbors = 0;
-  if(neighbors & 0x80)
-    numNeighbors += isAlive(NORTH);
-  if(neighbors & 0x40)
-    numNeighbors += isAlive(NORTH_EAST);
-  if(neighbors & 0x20)
-    numNeighbors += isAlive(EAST);
-  if(neighbors & 0x10)
-    numNeighbors += isAlive(SOUTH_EAST);
-  if(neighbors & 0x08)
-    numNeighbors += isAlive(SOUTH);
-  if(neighbors & 0x04)
-    numNeighbors += isAlive(SOUTH_WEST);
-  if(neighbors & 0x02)
-    numNeighbors += isAlive(WEST);
-  if(neighbors & 0x01)
-    numNeighbors += isAlive(NORTH_WEST);
-  return numNeighbors;
+  for(unsigned int i = 0; i < adjacent.size(); i++) {
+    numNeighbors += isAlive(adjacent[i]);
+  }
+  cell.setNeighbors(numNeighbors);
 }
 
 
@@ -226,8 +218,6 @@ void AbstractCell::setNeighbors(int n) {
   if(n < 0 || n > 8) throw(invalid_argument("n must be between 0 and 8, inclusive"));
   numNeighbors = n;
 }
-
-
 
 AbstractCell::operator bool() {
   return alive;
@@ -259,7 +249,7 @@ Cell& Cell::operator = (Cell other) {
   swap(ptr, other.ptr);
   return *this;
 }
-
+  
 Cell::~Cell() {
   delete ptr;
 }
@@ -272,7 +262,7 @@ void Cell::turn() {
   }
 }
 
-unsigned char Cell::neighbors() {
+const vector<Position>& Cell::neighbors() {
   return ptr->neighbors();
 }
 
@@ -311,8 +301,8 @@ void ConwayCell::turn() {
     alive = alive; //do nothing
 }
 
-unsigned char ConwayCell::neighbors() {
-  return 0xFF;
+const vector<Position>& ConwayCell::neighbors() {
+  return conwayNeighbors;
 }
 
 
@@ -357,8 +347,8 @@ void FredkinCell::turn() {
 /**
  * Tell which of the 8 surrounding cells are counted as neighbors. 
  */
-unsigned char FredkinCell::neighbors() {
-  return 0xAA;
+const vector<Position>& FredkinCell::neighbors() {
+  return fredkinNeighbors;
 }
 
 /**
@@ -379,4 +369,3 @@ FredkinCell::operator int() {
 AbstractCell* FredkinCell::clone(){
   return new FredkinCell(*this);
 }
-
