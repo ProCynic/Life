@@ -1,6 +1,7 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include <stdexcept> // invalid_argument, out_of_range
 
 using namespace std;
 class Position {
@@ -222,6 +223,7 @@ bool Life<T>::isAlive(Position adj) {
 // -------------
 
 void AbstractCell::setNeighbors(int n) {
+  if(n < 0 || n > 8) throw(invalid_argument("n must be between 0 and 8, inclusive"));
   numNeighbors = n;
 }
 
@@ -344,17 +346,24 @@ FredkinCell::FredkinCell(char c) {
  */
 void FredkinCell::turn() {
   if (numNeighbors % 2 == 1) {
+    if(alive)
+      age++;
     alive = true;
-    age++;
   }
   else
     alive = false;
 }
 
+/**
+ * Tell which of the 8 surrounding cells are counted as neighbors. 
+ */
 unsigned char FredkinCell::neighbors() {
   return 0xAA;
 }
 
+/**
+ * 
+ */
 char FredkinCell::name() {
   if(!alive)
     return '-';
