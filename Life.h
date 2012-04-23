@@ -22,14 +22,14 @@ class Position {
   }
 };
 
-const static Position NORTH(1, 0);
-const static Position NORTH_EAST(1, 1);
+const static Position NORTH(-1, 0);
+const static Position NORTH_EAST(-1, 1);
 const static Position EAST(0, 1);
-const static Position SOUTH_EAST(-1, 1);
-const static Position SOUTH(-1, 0);
-const static Position SOUTH_WEST(-1, -1);
+const static Position SOUTH_EAST(1, 1);
+const static Position SOUTH(1, 0);
+const static Position SOUTH_WEST(1, -1);
 const static Position WEST(0, -1);
-const static Position NORTH_WEST(1, -1);
+const static Position NORTH_WEST(-1, -1);
 
 static const Position cnarr[] = {NORTH, NORTH_EAST, EAST, SOUTH_EAST, SOUTH, SOUTH_WEST, WEST, NORTH_WEST};
 static const Position fnarr[] = {NORTH, EAST, SOUTH, WEST};
