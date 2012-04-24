@@ -1,0 +1,156 @@
+commit a1fb57cd7375d38f884a5476d06ba9a951c11f1f
+Author: Geoffrey Parker <professional.cynic@gmail.com>
+Date:   Tue Apr 24 18:09:27 2012 -0500
+
+    added test output files
+
+commit f1fb1a811ae5ee90baa82da00083ccb1d9458db7
+Author: Geoffrey Parker <professional.cynic@gmail.com>
+Date:   Tue Apr 24 17:58:31 2012 -0500
+
+    added Life.pdf
+
+commit fddbe0f29a08fe91fdfd2abc217fd2985a827a2b
+Author: Geoffrey Parker <professional.cynic@gmail.com>
+Date:   Tue Apr 24 17:39:25 2012 -0500
+
+    Filled out documentation
+
+commit 2c8cf25d97658b439a980ca1b12189518e2b6e3b
+Author: wlee <tree03@paran.com>
+Date:   Sun Apr 22 22:21:42 2012 -0500
+
+    unit tests complete
+
+commit 716c6e897a2a9232d7fa39af10f09552be7a4cad
+Author: wlee <tree03@paran.com>
+Date:   Sun Apr 22 20:38:18 2012 -0500
+
+    started documentatition
+
+commit 5747d2e4e9f0abbd9d1c3cca245c771007a97f3b
+Author: Geoffrey Parker <professional.cynic@gmail.com>
+Date:   Sun Apr 22 20:32:15 2012 -0500
+
+    added comments for remaining unit tests
+
+commit 26015922820b213cd0d59080834ea1a88b735832
+Author: Geoffrey Parker <professional.cynic@gmail.com>
+Date:   Sun Apr 22 19:57:22 2012 -0500
+
+    redid count neighbors, fixed memory leak in unit tests
+
+commit 49ce4456a896f85e62eb023c63a4e3b58f410f1f
+Author: wlee <tree03@paran.com>
+Date:   Sun Apr 22 19:13:02 2012 -0500
+
+    unit tests except Cell and neighbors
+
+commit 8d065d2382ab2719ef48cbb31f3eec3f670861bb
+Author: wlee <tree03@paran.com>
+Date:   Sun Apr 22 17:29:44 2012 -0500
+
+    implemented cell, all acceptance tests work
+
+commit 1b944d73e58437769a9d49af441ce0245c311c49
+Merge: a05fa72 9a05973
+Author: wlee <tree03@paran.com>
+Date:   Sun Apr 22 14:29:05 2012 -0500
+
+    have conway / fredkin tests working so far
+
+commit a05fa724668f7097807997462fd3939119c59668
+Author: wlee <tree03@paran.com>
+Date:   Sun Apr 22 14:23:26 2012 -0500
+
+    Conway and Fredkin constructor and name tests
+
+commit 9a059736f1c5e1a17b3ade75928cdae7ca7edf60
+Author: Geoffrey Parker <professional.cynic@gmail.com>
+Date:   Sun Apr 22 14:17:37 2012 -0500
+
+    added life construction and simulate unit tests
+
+commit 54823c670a6a1c848df6ff1fe6e0e414d4209f27
+Author: wlee <tree03@paran.com>
+Date:   Sun Apr 22 13:20:19 2012 -0500
+
+    changed how countNeighbors works, commenting out Cell for now
+
+commit 0790c4cd2f3451d44458ec7780146ff0ed00a869
+Author: Geoffrey Parker <professional.cynic@gmail.com>
+Date:   Thu Apr 19 22:37:16 2012 -0500
+
+    mostly implemented Cell
+
+commit 152b2bb7cb791ef00355d2a77dc7044087e71f36
+Author: Geoffrey Parker <professional.cynic@gmail.com>
+Date:   Thu Apr 19 22:10:28 2012 -0500
+
+    Conway and Fredkin tests work
+
+commit ea5398f8732e24830ee5ffbbba7887607f9c6563
+Author: Geoffrey Parker <professional.cynic@gmail.com>
+Date:   Thu Apr 19 21:22:15 2012 -0500
+
+    added unit test skeleton
+
+commit e9b32e982ebee195039c1f18132a67b5820ef30e
+Author: Geoffrey Parker <professional.cynic@gmail.com>
+Date:   Thu Apr 19 21:17:23 2012 -0500
+
+    fredkin test case working
+
+commit 8f5689ea2b9a4e98f29fb5a7f7c402cab1a52168
+Author: Geoffrey Parker <professional.cynic@gmail.com>
+Date:   Thu Apr 19 20:32:26 2012 -0500
+
+    it compiles
+
+commit 318ce2cead284f1262b4f0c78229ad56607fc813
+Author: Geoffrey Parker <professional.cynic@gmail.com>
+Date:   Thu Apr 19 19:19:52 2012 -0500
+
+    cleaned up .gitignore
+
+commit c06c05915925ed13534effc5cc31a8c012f5c5d5
+Author: Geoffrey Parker <professional.cynic@gmail.com>
+Date:   Thu Apr 19 19:17:58 2012 -0500
+
+    added .gitignore
+
+commit 621a644f5b5956fa7081819652442c6834246e37
+Author: Geoffrey Parker <professional.cynic@gmail.com>
+Date:   Thu Apr 19 19:16:26 2012 -0500
+
+    working on compiling
+
+commit 391bb4ba46448abc9b92a138c83575f9c60091f5
+Author: Geoffrey Parker <professional.cynic@gmail.com>
+Date:   Thu Apr 19 18:59:36 2012 -0500
+
+    finished first pass, started debugging
+
+commit 5ae014a49d7a08f8e2c1bea78ce705a8e415dc47
+Author: Geoffrey Parker <professional.cynic@gmail.com>
+Date:   Tue Apr 17 18:21:10 2012 -0500
+
+    indentation cleanup, added a few comments
+
+commit 3bb28aa4577ff7fb33e588df6b6c911e21091f43
+Author: wlee <tree03@paran.com>
+Date:   Tue Apr 17 18:12:40 2012 -0500
+
+    started filling out skeleton of Life.h
+
+commit a46fb45a696bcbaa1e72d8b3894344add89bb6ff
+Author: Geoffrey Parker <professional.cynic@gmail.com>
+Date:   Tue Apr 17 17:44:40 2012 -0500
+
+    added readme and makefile
+
+commit 6f8cb1320d505678eba101b7c4b44906a69dc04a
+Author: Geoffrey Parker <professional.cynic@gmail.com>
+Date:   Thu Apr 12 21:23:55 2012 -0500
+
+    initial commit, skeleton files
