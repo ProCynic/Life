@@ -1,3 +1,15 @@
+commit 8b8a4d2458c728e292b4fb4349f9a03f3f7ec041
+Author: Geoffrey Parker <professional.cynic@gmail.com>
+Date:   Tue Apr 24 18:41:20 2012 -0500
+
+    added int conversion to Cell.  Not necessary, but cell should mirror abstractCell api
+
+commit 304fea015f9c262718db9beb6758fc81c795bbb6
+Author: Geoffrey Parker <professional.cynic@gmail.com>
+Date:   Tue Apr 24 18:09:44 2012 -0500
+
+    added git log file
+
 commit a1fb57cd7375d38f884a5476d06ba9a951c11f1f
 Author: Geoffrey Parker <professional.cynic@gmail.com>
 Date:   Tue Apr 24 18:09:27 2012 -0500
