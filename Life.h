@@ -91,6 +91,7 @@ class Cell {
   void setNeighbors(int);
   
   operator bool();
+  operator int();
 };
 
 
@@ -359,6 +360,14 @@ void Cell::setNeighbors(int n) {
  * return the conversion to bool of the contained AbstractCell
  */
 Cell::operator bool(){
+  return *ptr;
+}
+
+/**
+ * Conversion to int
+ * return the conversion to int of the contained AbstractCell
+ */
+Cell::operator int() {
   return *ptr;
 }
 
